@@ -352,29 +352,18 @@ class LUC_AVLTree {
             node.rightChild = deleteElement(value, node.rightChild);
         } else {
             //Deleting node
-            if (node.leftChild == null || node.rightChild == null) {
-                Node temp;
-                if (node.leftChild != null) {
-                    temp = node.leftChild;
-                } else {
-                    temp = node.rightChild;
-                }
-                //No children
-                if (temp == null) {
-                    node = null;
-                } else {
-                    node = temp;
-                }
+            if (node.leftChild == null && node.rightChild == null) {
+                return null;
+            } else if (node.leftChild == null) {
+                return node.rightChild;
+            } else if (node.rightChild == null) {
+                return node.leftChild;
             } else {
                 //2 children
-                int minValue= minValue(node.rightChild);
-                node.value = minValue;
-                node.rightChild = deleteElement(minValue, node.rightChild);
+                Node next = minValueNode(node.rightChild);
+                node.value = next.value;
+                node.rightChild = deleteElement(next.value, node.rightChild);
             }
-        }
-
-        if (node == null) {
-            return node;
         }
 
         node.height = 1 + getMaxHeight(getHeight(node.leftChild), getHeight(node.rightChild));
@@ -384,8 +373,7 @@ class LUC_AVLTree {
             if (getBalanceFactor(node.leftChild) >= 0) {
                 return LLRotation(node);
             } else {
-                node.leftChild = RRRotation(node);
-                return LLRotation(node);
+                return LRRotation(node);
             }
         }
 
@@ -393,33 +381,11 @@ class LUC_AVLTree {
             if (getBalanceFactor(node.rightChild) <= 0) {
                 return RRRotation(node);
             } else {
-                node.rightChild = LLRotation(node);
-                return RRRotation(node);
+                return RLRotation(node);
             }
         }
-
         return node;
-    }
-
-        /*
-         * ADD CODE HERE
-         * 
-         * NOTE, that you should use the existing coded private methods
-         * in this file, which include:
-         *      - minValueNode,
-         *      - getMaxHeight,
-         *      - getHeight,
-         *      - getBalanceFactor,
-         *      - LLRotation
-         *      - RRRotation,
-         *      - LRRotation,
-         *      - RLRotation.
-         *
-         * To understand what each of these methods do, see the method prologues and
-         * code for each. You can also look at the method InsertElement, as it has do
-         * do many of the same things as this method.
-         */
-
+        }
 
     /**
      *  Method getBalance
